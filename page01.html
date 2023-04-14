@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+</head>
+<style>
+    *{
+        font-family:Arial, Helvetica, sans-serif
+    }
+    body{
+        background-image: linear-gradient(270deg, rgb(191, 0, 0), rgb(0, 0, 0));
+        color: white;
+    }
+    .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 135px;
+        margin-left: 570px;
+        width: 400px;
+        height: 450px;
+        background-color:white;
+        border-radius: 10px;
+        -moz-box-shadow: 0 0 5px rgb(0, 0, 0);
+        -webkit-box-shadow: 0 0 5px rgb(0, 0, 0);
+        box-shadow: 0 0 5px rgb(0, 0, 0);
+    }
+    .form{
+        width: 400px;
+        height: 450px;
+        background-color: black;
+        color: white;
+        border-radius: 10px;
+    }
+    .heading{
+        font-weight: 600;
+        color: rgb(227, 227, 227);
+        margin: 20px 30px 20px 30px;
+        padding-left: 120px;
+    }
+    .info, .submit_button{
+        padding: 10px 10px;
+        margin: 15px 30px 15px 30px;
+    }
+    .anchor_link{
+        font-size: 12px;
+        margin: 20px 0 0 136px;
+        width: 150px;
+        height: 25px;
+    }
+    a{
+        color: rgb(188, 188, 188);
+    }
+    .submit_button{
+        padding: 0 70px 0 32px;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    #button{
+        color: whitesmoke;
+        background-color:rgb(105, 19, 67);
+        padding: 0 0 0 0;
+        width: 270px;
+        height: 40px;
+        border-radius: 10px;
+        border-width: 0;
+        -moz-box-shadow: 0 0 5px rgb(96,96,96);
+        -webkit-box-shadow: 0 0 5px rgb(96,96,96);
+        box-shadow: 0 0 5px rgb(96,96,96);
+    }
+    #button:hover{
+        cursor: pointer;
+        -moz-box-shadow: 0 0 10px rgb(0, 0, 0);
+        -webkit-box-shadow: 0 0 10px rgb(0, 0, 0);
+        box-shadow: 0 0 10px rgb(0, 0, 0);
+        transform: translateY(-0.33em);
+    }
+    #button:active{
+        transform: translateY(0.33rem) 0.1s ease-in-out;
+    }
+    #username, #password, #email{
+        background-color: rgb(196, 196, 196);
+        height: 35px;
+        width: 300px;
+        border-radius: 10px;
+        border-width: 1px;
+        border-color: rgb(194, 194, 194);
+    }
+    .wellcome{
+        justify-content: center;
+        align-items: center;
+        background-image: linear-gradient(90deg, rgb(173, 14, 40), rgb(43, 130, 167));
+        margin-top: 300px;
+    }
+
+</style>
+<script>
+function sendLogin(){
+var user = document.getElementById("username").value;
+var pass = document.getElementById("password").value;
+var e = document.getElementById("email").value;
+//xhr 
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function(){
+    if (this.readyState == 4 && this.status == 200){
+        var response = JSON.parse(this.response);
+        if(response){
+            for(index=0; index<response.length; index++){
+
+            if((user!==response[index].username) && (pass===response[index].password) && (e===response[index].email)){
+                alert ("Incorrect Username or not a User")
+                break;
+            }
+            else if((user===response[index].username) && (pass!==response[index].password) && (e===response[index].email)){
+                alert ("Incorrect Password or not a User")
+                break;
+            }
+            else if((user===response[index].username) && (pass===response[index].password) && (e!==response[index].email)){
+                alert ("Incorrect Email or not a User")
+                break;
+            }
+            else if((user===response[index].username) && (pass===response[index].password) && (e===response[index].email)){
+                document.getElementById("container").style.display= "none";
+                document.getElementById("wellcome").style.display= "flex";
+                document.getElementById("greeting").innerHTML = `Welcome ${user}`;
+                return;
+            }
+            else{
+                alert ("Incorrect User credentials or not a User")
+                break;
+            }
+        }
+    }
+}
+}
+    //opens server to GET data
+ xhttp.open("GET","http://localhost:8080/",true);
+ xhttp.send();
+};
+</script>
+<body>
+    <div id ="container" class="container" style="display:flex">
+        <form class="form" action="submit">
+        <h1 class="heading">Login</h1>
+        <div class="info">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder=" Username" maxlength="14" required>
+        </div>
+        <div class="info">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder=" Password" maxlength="15" required>
+        </div>
+        <div class="info">
+            <label for="email">Email:</label>
+            <input type="text" id="email" placeholder=" xyz@email.com" required>
+        </div>
+        <div class="submit_button" onclick="sendLogin()">
+            <input id="button" type="button" value="SIGN IN">
+        </div>
+        <div class="anchor_link" id="anchor_link">
+            <a href="page02.html">Don't have an account?</a>
+        </div>
+        </form>
+    </div>
+    <div class="wellcome" id="wellcome" style="display:none">
+        <div class="container2">
+            <p id="greeting"></p>
+        </div>
+    </div>
+</body>
+</html>
