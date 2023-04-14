@@ -1,0 +1,53 @@
+var express = require('express');
+var app = express();
+var fs = require('fs');
+app.use(express.static('public'))
+//CORS error
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");    
+    next();
+  });
+//main app
+const PORT = 8080;
+app.get("/", function(req, res){
+    fs.readFile("loginData.txt", "utf-8", function(err, data){
+        if(err) return err;
+        else{
+            const users = data.split("\n");
+            for(let elements of users){
+                let json = JSON.stringify(elements);
+                res.send(json);
+            }
+            
+        }
+    })
+});
+
+//POST
+var bodyParser = require('body-parser');//to receive JSON (PUT/POST)
+app.use(bodyParser.json());
+
+app.post("/post",function(req, res){
+    const postedData = req.body;
+    let posts = JSON.stringify(postedData);
+    console.log(posts);
+    //write file with POST data if it doesnt exist already
+    fs.readFile("loginData.txt", "utf-8", function(err, data){
+        if(err) return err;
+        if(data.includes(req.body.username) || data.includes(req.body.password) || data.includes(req.body.email)){
+            console.log("User already exists");
+        }
+        else{
+            fs.appendFile("loginData.txt", posts, function(err){
+                if(err) return err;
+                else console.log("File written")
+                console.log(`writing: ${posts}`)
+            })
+        }
+    })
+});
+
+
+app.listen(PORT, ()=>{console.log("Server Started")});
